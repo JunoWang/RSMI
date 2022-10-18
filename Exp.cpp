@@ -6,7 +6,6 @@
 #include <string>
 #include <boost/algorithm/string.hpp>
 #include "utils/FileReader.h"
-#include "indices/ZM.h"
 #include "indices/RSMI.h"
 #include "utils/ExpRecorder.h"
 #include "utils/Constants.h"
@@ -64,7 +63,7 @@ void exp_RSMI(FileWriter file_writer, ExpRecorder exp_recorder, vector<Point> po
 {
     exp_recorder.clean();
     exp_recorder.structure_name = "RSMI";
-    RSMI::model_path_root = model_path;
+    :RSMI::model_path_root = model_path;
     RSMI *partition = new RSMI(0,  Constants::MAX_WIDTH);
     auto start = chrono::high_resolution_clock::now();
     partition->model_path = model_path;

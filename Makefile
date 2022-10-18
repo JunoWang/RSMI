@@ -16,9 +16,9 @@ ifeq ($(TYPE), GPU)
 	LIB +=-L/home/liuguanli/Documents/libtorch_gpu/lib -ltorch -lc10 -lpthread
 	FLAG = -Wl,-rpath=/home/liuguanli/Documents/libtorch_gpu/lib
 else
-	INCLUDE = -I/home/liuguanli/Documents/libtorch/include -I/home/liuguanli/Documents/libtorch/include/torch/csrc/api/include
-	LIB +=-L/home/liuguanli/Documents/libtorch/lib -ltorch -lc10 -lpthread
-	FLAG = -Wl,-rpath=/home/liuguanli/Documents/libtorch/lib
+	INCLUDE = -I/home/cwang39/libtorch/include -I/home/cwang39/libtorch/include/torch/csrc/api/include
+	LIB +=-L/home/cwang39/libtorch/lib -ltorch -ltorch_cpu -lc10 -lpthread
+	FLAG = -Wl,-rpath=/home/cwang39/libtorch/lib
 endif
 
 
