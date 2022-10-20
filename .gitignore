@@ -16,3 +16,7 @@ torch_models_zm/*
 *.eps
 *.png
 ./idea
+.idea/misc.xml
+.gitignore
+.idea/RSMI.iml
+.idea/modules.xml
