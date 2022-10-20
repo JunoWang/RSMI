@@ -424,7 +424,7 @@ namespace pre_train_rsmi
             Net::load_pre_trained_model_rsmi(threshold);
         }
 
-        FileWriter file_writer("/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/");
+        FileWriter file_writer("/home/cwang/RSMI/cost_model/");
         while ((ptr = readdir(dir)) != NULL)
         {
             if (ptr->d_name[0] == '.')
@@ -540,9 +540,9 @@ namespace pre_train_rsmi
                     int bit_num = Constants::BIT_NUM;
                     // pre_train_zm::write_approximate_SFC(Constants::DATASETS, exp_recorder.distribution + "_" + to_string(exp_recorder.dataset_cardinality) + "_" + to_string(exp_recorder.skewness) + "_2_.csv", bit_num);
                     pre_train_zm::write_approximate_SFC(all_points, path, bit_num);
-                    string commandStr = "python /home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/pre_train/rl_4_sfc/RL_4_SFC_for_cost_model.py -d " +
+                    string commandStr = "python /home/cwang39/RSMI/pre_train/rl_4_sfc/RL_4_SFC_for_cost_model.py -d " +
                                         file_name + " -b " + to_string(bit_num) +
-                                        " -f /home/liuguanli/Documents/pre_train/sfc_z_weight/bit_num_%d/%s.csv";
+                                        " -f /home/cwang39/RSMI/pre_train/sfc_z_weight/bit_num_%d/%s.csv";
                     // string commandStr = "python /home/liuguanli/Documents/pre_train/rl_4_sfc/RL_4_SFC.py";
                     char command[1024];
                     strcpy(command, commandStr.c_str());
@@ -608,10 +608,10 @@ namespace pre_train_rsmi
     {
         cout << "cost_model_build" << endl;
         FileReader filereader(",");
-        string path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/train_set_formatted.csv";
+        string path = "/home/cwang39/RSMI/cost_model/train_set_formatted.csv";
         // string path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/train_set_formatted_normalized.csv";
-        string build_time_model_path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/build_time_model_rsmi.pt";
-        string query_time_model_path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/query_time_model_rsmi.pt";
+        string build_time_model_path = "/home/cwang39/RSMI/cost_model/build_time_model_rsmi.pt";
+        string query_time_model_path = "/home/cwang39/RSMI/cost_model/query_time_model_rsmi.pt";
 
         std::ifstream fin_build(build_time_model_path);
         std::ifstream fin_query(query_time_model_path);
@@ -649,7 +649,7 @@ namespace pre_train_rsmi
     {
         cout << "evaluate_cost_model " << endl;
         // read file
-        string path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/train_set_formatted_test.csv";
+        string path = "/home/cwang39/RSMI/cost_model/train_set_formatted_test.csv";
         FileReader filereader(",");
         vector<float> parameters;
         vector<float> build_time_labels;

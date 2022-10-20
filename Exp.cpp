@@ -1,5 +1,5 @@
 #ifndef use_gpu
-#define use_gpu
+//#define use_gpu
 #include <iostream>
 #include <fstream>
 #include <iterator>

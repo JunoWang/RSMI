@@ -691,9 +691,9 @@ namespace pre_train_zm
         // string path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/train_set_formatted_normalized.csv";
         // string build_time_model_path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/build_time_model_zm_normalized.pt";
         // string query_time_model_path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/query_time_model_zm_normalized.pt";
-        string path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/train_set_formatted.csv";
-        string build_time_model_path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/build_time_model_zm.pt";
-        string query_time_model_path = "/home/liuguanli/Dropbox/shared/VLDB20/codes/rsmi/cost_model/query_time_model_zm.pt";
+        string path = "/home/cwang39/RSMI/cost_model/train_set_formatted.csv";
+        string build_time_model_path = "/home/cwang39/RSMI/cost_model/build_time_model_zm.pt";
+        string query_time_model_path = "/home/cwang39/RSMI/cost_model/query_time_model_zm.pt";
 
         std::ifstream fin_build(build_time_model_path);
         std::ifstream fin_query(query_time_model_path);
