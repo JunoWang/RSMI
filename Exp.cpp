@@ -225,8 +225,8 @@ void exp_RSMI(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &
             file_writer.write_insert_acc_window_query(exp_recorder);
             partition->window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
 
-            exp_recorder.window_size = areas[2];
-            exp_recorder.window_ratio = ratios[2];
+    exp_recorder.window_size = areas[2];
+    exp_recorder.window_ratio = ratios[2];
             exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
             file_writer.write_insert_window_query(exp_recorder);
             exp_recorder.clean();
@@ -361,7 +361,7 @@ void exp_LISA(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &
             exp_recorder.window_size = areas[2];
             exp_recorder.window_ratio = ratios[2];
             lisa->acc_window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
-            file_writer.write_acc_window_query(exp_recorder);
+    file_writer.write_acc_window_query(exp_recorder);
             lisa->window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
 
             exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
@@ -419,7 +419,7 @@ void exp_ZM(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &po
             exp_recorder.window_size = areas[i];
             exp_recorder.window_ratio = ratios[2];
             exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
-            file_writer.write_window_query(exp_recorder);
+    file_writer.write_window_query(exp_recorder);
             exp_recorder.clean();
         }
 
@@ -434,7 +434,7 @@ void exp_ZM(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &po
             zm->kNN_query(exp_recorder, query_points, exp_recorder.k_num);
             exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
             file_writer.write_kNN_query(exp_recorder);
-            exp_recorder.clean();
+    exp_recorder.clean();
         }
     }
     else
@@ -448,15 +448,15 @@ void exp_ZM(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &po
         file_writer.write_window_query(exp_recorder);
         exp_recorder.clean();
 
-        exp_recorder.k_num = ks[2];
+    exp_recorder.k_num = ks[2];
 
         zm->acc_kNN_query(exp_recorder, query_points, exp_recorder.k_num);
-        file_writer.write_acc_kNN_query(exp_recorder);
+    file_writer.write_acc_kNN_query(exp_recorder);
 
         zm->kNN_query(exp_recorder, query_points, exp_recorder.k_num);
-        exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
-        file_writer.write_kNN_query(exp_recorder);
-        exp_recorder.clean();
+    exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
+    file_writer.write_kNN_query(exp_recorder);
+    exp_recorder.clean();
     }
 
     // long inserted_all_size = exp_recorder.inserted_points.size();
@@ -514,7 +514,7 @@ void exp_ZM(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &po
             cout << "insert size: " << vec.size() << endl;
             bool is_rebuild = zm->insert(exp_recorder, vec);
             file_writer.write_insert(exp_recorder);
-            exp_recorder.clean();
+    exp_recorder.clean();
 
             if (is_rebuildable && is_rebuild)
             {
@@ -526,8 +526,8 @@ void exp_ZM(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &po
                 cout << "rebuild: " << points.size() << endl;
                 zm->build(exp_recorder, points, Constants::RESOLUTION);
                 file_writer.write_build(exp_recorder);
-                exp_recorder.clean();
-            }
+    exp_recorder.clean();
+}
 
             zm->point_query(exp_recorder, points);
             file_writer.write_insert_point_query(exp_recorder);
@@ -949,7 +949,7 @@ void parse(int argc, char **argv, ExpRecorder &exp_recorder)
 {
     int c;
     static struct option long_options[] =
-        {
+    {
             {"cardinality", required_argument, NULL, 'c'},
             {"distribution", required_argument, NULL, 'd'},
             {"skewness", required_argument, NULL, 's'},
@@ -959,28 +959,28 @@ void parse(int argc, char **argv, ExpRecorder &exp_recorder)
             {"update", no_argument, NULL, 'u'},
             {"index", required_argument, NULL, 'i'},
 
-        };
+    };
 
     while (1)
     {
         int opt_index = 0;
         c = getopt_long(argc, argv, "c:d:s:l:n:tu:ri:", long_options, &opt_index);
-
+        
         if (-1 == c)
         {
             break;
         }
         switch (c)
         {
-        case 'c':
-            cardinality = atoll(optarg);
-            break;
-        case 'd':
-            distribution = optarg;
-            break;
-        case 's':
-            skewness = atoi(optarg);
-            break;
+            case 'c':
+                cardinality = atoll(optarg);
+                break;
+            case 'd':
+                distribution = optarg;
+                break;
+            case 's':
+                skewness = atoi(optarg);
+                break;
         case 'l':
             lambda = atof(optarg);
             break;
