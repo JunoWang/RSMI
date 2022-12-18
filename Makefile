@@ -8,17 +8,19 @@ OBJS=$(patsubst %.cpp, %.o, $(SRCS))
 # FLAG = -Xlinker -rpath -Xlinker /usr/local/include/libtorch/lib
 
 TYPE = CPU
+LIBTORCH_PREFIX = /usr/local/libtorch
+LIBTORCH_CPU_PREFIX=/usr/local/libtorch_1_4_0_cpu
 
 #TYPE = GPU
 # for linux
 ifeq ($(TYPE), GPU)
-	INCLUDE = -I/home/cwang39/libtorch/include -I/home/cwang39/libtorch/include/torch/csrc/api/include
-	LIB +=-L/home/cwang39/libtorch/lib -ltorch -lc10 -lpthread
-	FLAG = -Wl,-rpath=/home/cwang39/libtorch/lib
+	INCLUDE = -I$(LIBTORCH_PREFIX)/include -I$(LIBTORCH_PREFIX)/include/torch/csrc/api/include
+	LIB +=-L$(LIBTORCH_PREFIX)/lib   -ltorch -lc10  -lpthread
+	FLAG = -Wl,-rpath=$(LIBTORCH_PREFIX)/lib
 else
-	INCLUDE = -I/home/cwang39/libtorch/include -I/home/cwang39/libtorch/include/torch/csrc/api/include
-	LIB +=-L/home/cwang39/libtorch/lib -ltorch -ltorch_cpu -lc10 -lpthread
-	FLAG = -Wl,-rpath=/home/cwang39/libtorch/lib
+	INCLUDE = -I$(LIBTORCH_CPU_PREFIX)/include -I$(LIBTORCH_CPU_PREFIX)/include/torch/csrc/api/include
+	LIB +=-L$(LIBTORCH_CPU_PREFIX)/lib -ltorch -lc10 -lpthread
+	FLAG = -Wl,-rpath=$(LIBTORCH_CPU_PREFIX)/lib
 endif
 
 # INCLUDE = -I/home/liuguanli/Documents/libtorch/include -I/home/liuguanli/Documents/libtorch/include/torch/csrc/api/include

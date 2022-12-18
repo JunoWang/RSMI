@@ -90,6 +90,8 @@ public:
 
     double threshold = 0.1;
 
+    double num_rec_before_refine = 0;
+    double num_rec_after_refine = 0;
     ZM();
     ZM(int);
     ZM(string);
@@ -1088,9 +1090,9 @@ void ZM::point_query(ExpRecorder &exp_recorder, vector<Point> query_points)
         // }
     }
     auto finish = chrono::high_resolution_clock::now();
-    // cout<< "time: " << res << endl;
-    // cout<< "prediction_time: " << exp_recorder.prediction_time << endl;
-    // cout<< "search_time: " << exp_recorder.search_time << endl;
+    cout<< "time: " << res << endl;
+    cout<< "prediction_time: " << exp_recorder.prediction_time << endl;
+    cout<< "search_time: " << exp_recorder.search_time << endl;
     exp_recorder.time = res / query_points.size();
     exp_recorder.page_access /= query_points.size();
     exp_recorder.search_time /= query_points.size();
@@ -1207,6 +1209,7 @@ vector<Point> ZM::window_query(ExpRecorder &exp_recorder, Mbr query_window)
             exp_recorder.page_access += 1;
             for (Point point : *(leafnode->children))
             {
+                num_rec_before_refine ++;
                 if (query_window.contains(point))
                 {
                     window_query_results.push_back(point);
@@ -1233,8 +1236,11 @@ void ZM::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
         auto start = chrono::high_resolution_clock::now();
         vector<Point> window_query_results = window_query(exp_recorder, query_windows[i]);
         auto finish = chrono::high_resolution_clock::now();
+        cout << "num_rec_before_refine" << num_rec_before_refine << endl;
+        num_rec_before_refine = 0;
         exp_recorder.time += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
         exp_recorder.window_query_result_size += window_query_results.size();
+        cout << "num_rec_after_refine" <<  num_rec_after_refine << endl;
         // break;
     }
     // auto finish = chrono::high_resolution_clock::now();
@@ -1243,6 +1249,8 @@ void ZM::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
     exp_recorder.search_length /= query_windows.size();
     exp_recorder.prediction_time /= query_windows.size();
     exp_recorder.page_access = (double)exp_recorder.page_access / query_windows.size();
+    cout << "ZM widow query time" << exp_recorder.time/query_windows.size()<< endl;
+    
 }
 
 vector<Point> ZM::acc_window_query(ExpRecorder &exp_Recorder, Mbr query_Window)

@@ -93,6 +93,9 @@ public:
     int cluster_size = 100;
     string insert_points_distribution = "normal";
 
+    double num_of_rec_before_refine;
+    double num_of_leaf_skipped;
+    double total_num_of_leaf_reached;
     long window_query_result_size;
     long acc_window_query_result_size;
     vector<Point> knn_query_results;

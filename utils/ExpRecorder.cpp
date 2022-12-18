@@ -321,6 +321,7 @@ void ExpRecorder::clean()
     window_query_result_size = 0;
     acc_window_query_result_size = 0;
 
+    num_of_rec_before_refine = 0;
     knn_query_results.clear();
     knn_query_results.shrink_to_fit();
 

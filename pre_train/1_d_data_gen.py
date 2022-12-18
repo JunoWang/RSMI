@@ -8,7 +8,7 @@ import sys
 import pandas as pd
 import tensorflow as tf
 
-from sympy import *
+# from sympy import *
 import math
 
 curPath = os.path.abspath(os.path.dirname(__file__))
@@ -18,8 +18,8 @@ sys.path.append(rootPath)
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-filename = "/home/liuguanli/Documents/pre_train/1D_data/%.1f/index_%d.csv"
-dirname = "/home/liuguanli/Documents/pre_train/1D_data/%.1f/"
+filename = "/home/cwang39/RSMI/pre_train/1D_data/%.1f/index_%d.csv"
+dirname = "/home/cwang39/RSMI/pre_train/1D_data/%.1f/"
 
 cardinality = 100
 
@@ -283,7 +283,7 @@ def gen_1d_synthetic_datasets():
 
 if __name__ == '__main__':
     gen_1d_synthetic_datasets()
-    gen_2d_synthetic_datasets()
+    # gen_2d_synthetic_datasets()
     # get_data_from_tpc_h()
     # scales = [1, 128, 1024]
     # data_sizes = [1000]

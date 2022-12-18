@@ -14,7 +14,6 @@
 #include "../entities/SFC.h"
 
 #include "util.h"
-
 namespace pre_train_zm
 {
     void each_cnn(vector<int> sfc, int threshold, int z_value_begin, vector<int> &result, vector<float> &z_values)

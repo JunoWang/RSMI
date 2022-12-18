@@ -1,5 +1,5 @@
 #ifndef use_gpu
-//#define use_gpu
+// #define use_gpu
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -104,24 +104,23 @@ double knn_diff(vector<Point> acc, vector<Point> pred)
 void exp_RSMI(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &points, map<string, vector<Mbr>> mbrs_map, vector<Point> query_points, string model_path)
 {
     cout << "exp_RSMI: " << endl;
-    std::stringstream stream;
-    stream << std::fixed << std::setprecision(1) << exp_recorder.model_reuse_threshold;
-    string threshold = stream.str();
-
-    auto start = chrono::high_resolution_clock::now();
-    pre_train_rsmi::pre_train_2d_H(Constants::RESOLUTION, threshold);
-    pre_train_rsmi::pre_train_2d_Z(Constants::RESOLUTION, threshold);
-    Net::load_pre_trained_model_rsmi(threshold);
-    auto finish = chrono::high_resolution_clock::now();
-    cout << "load time: " << chrono::duration_cast<chrono::nanoseconds>(finish - start).count() << endl;
+    // std::stringstream stream;
+    // stream << std::fixed << std::setprecision(1) << exp_recorder.model_reuse_threshold;
+    // string threshold = stream.str();
+    // auto start = chrono::high_resolution_clock::now();
+    // pre_train_rsmi::pre_train_2d_H(Constants::RESOLUTION, threshold);
+    // pre_train_rsmi::pre_train_2d_Z(Constants::RESOLUTION, threshold);
+    // Net::load_pre_trained_model_rsmi(threshold);
+    // auto finish = chrono::high_resolution_clock::now();
+    // cout << "load time: " << chrono::duration_cast<chrono::nanoseconds>(finish - start).count() << endl;
     exp_recorder.clean();
     exp_recorder.set_structure_name("RSMI");
     RSMI::model_path_root = model_path;
     RSMI *partition = new RSMI(0, Constants::MAX_WIDTH);
-    start = chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
     partition->model_path = model_path;
     partition->build(exp_recorder, points);
-    finish = chrono::high_resolution_clock::now();
+    auto finish = chrono::high_resolution_clock::now();
     exp_recorder.time = chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
     cout << "build time: " << exp_recorder.time << endl;
     exp_recorder.size = (2 * Constants::HIDDEN_LAYER_WIDTH + Constants::HIDDEN_LAYER_WIDTH * 1 + Constants::HIDDEN_LAYER_WIDTH * 1 + 1) * Constants::EACH_DIM_LENGTH * exp_recorder.non_leaf_node_num + (Constants::DIM * Constants::PAGESIZE + Constants::PAGESIZE + Constants::DIM * Constants::DIM) * Constants::EACH_DIM_LENGTH * exp_recorder.leaf_node_num;
@@ -133,53 +132,51 @@ void exp_RSMI(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &
     exp_recorder.clean();
     cout << "finish point query: " << endl;
     // cout << "exp_recorder.upper_level_lambda: " << exp_recorder.upper_level_lambda << endl;
+    if (exp_recorder.upper_level_lambda == 0.8)
+    {    //change back to origianl exp i =5 and areas[i] 
+        // TODO window
+        for (size_t i = 0; i < 1; i++)
+        {
+            exp_recorder.window_size = areas[2];
+            exp_recorder.window_ratio = ratios[2];
+            partition->acc_window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
+            file_writer.write_acc_window_query(exp_recorder);
+            partition->window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
+            exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
+            file_writer.write_window_query(exp_recorder);
+            exp_recorder.clean();
+        }
+        // TODO knn
+        for (size_t i = 0; i < 5; i++)
+        {
+            exp_recorder.k_num = ks[i];
+            partition->acc_kNN_query(exp_recorder, query_points, exp_recorder.k_num);
+            file_writer.write_acc_kNN_query(exp_recorder);
+            partition->kNN_query(exp_recorder, query_points, exp_recorder.k_num);
+            exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
+            file_writer.write_kNN_query(exp_recorder);
+            exp_recorder.clean();
+        }
+    }
+    else
+    {
+        exp_recorder.window_size = areas[2];
+        exp_recorder.window_ratio = ratios[2];
+        partition->acc_window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
+        file_writer.write_acc_window_query(exp_recorder);
+        partition->window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
+        exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
+        file_writer.write_window_query(exp_recorder);
+        exp_recorder.clean();
 
-    // if (exp_recorder.upper_level_lambda == 0.8)
-    // {
-    //     // TODO window
-    //     for (size_t i = 0; i < 5; i++)
-    //     {
-    //         exp_recorder.window_size = areas[i];
-    //         exp_recorder.window_ratio = ratios[2];
-    //         partition->acc_window_query(exp_recorder, mbrs_map[to_string(areas[i]) + to_string(ratios[2])]);
-    //         file_writer.write_acc_window_query(exp_recorder);
-    //         partition->window_query(exp_recorder, mbrs_map[to_string(areas[i]) + to_string(ratios[2])]);
-    //         exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
-    //         file_writer.write_window_query(exp_recorder);
-    //         exp_recorder.clean();
-    //     }
-
-    //     // TODO knn
-    //     for (size_t i = 0; i < 5; i++)
-    //     {
-    //         exp_recorder.k_num = ks[i];
-    //         partition->acc_kNN_query(exp_recorder, query_points, exp_recorder.k_num);
-    //         file_writer.write_acc_kNN_query(exp_recorder);
-    //         partition->kNN_query(exp_recorder, query_points, exp_recorder.k_num);
-    //         exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
-    //         file_writer.write_kNN_query(exp_recorder);
-    //         exp_recorder.clean();
-    //     }
-    // }
-    // else
-    // {
-    //     exp_recorder.window_size = areas[2];
-    //     exp_recorder.window_ratio = ratios[2];
-    //     partition->acc_window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
-    //     file_writer.write_acc_window_query(exp_recorder);
-    //     partition->window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
-    //     exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
-    //     file_writer.write_window_query(exp_recorder);
-    //     exp_recorder.clean();
-
-    //     exp_recorder.k_num = ks[2];
-    //     partition->acc_kNN_query(exp_recorder, query_points, exp_recorder.k_num);
-    //     file_writer.write_acc_kNN_query(exp_recorder);
-    //     partition->kNN_query(exp_recorder, query_points, exp_recorder.k_num);
-    //     exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
-    //     file_writer.write_kNN_query(exp_recorder);
-    //     exp_recorder.clean();
-    // }
+        exp_recorder.k_num = ks[2];
+        partition->acc_kNN_query(exp_recorder, query_points, exp_recorder.k_num);
+        file_writer.write_acc_kNN_query(exp_recorder);
+        partition->kNN_query(exp_recorder, query_points, exp_recorder.k_num);
+        exp_recorder.accuracy = knn_diff(exp_recorder.acc_knn_query_results, exp_recorder.knn_query_results);
+        file_writer.write_kNN_query(exp_recorder);
+        exp_recorder.clean();
+    }
 
     long inserted_all_size = exp_recorder.inserted_points.size();
 
@@ -225,8 +222,8 @@ void exp_RSMI(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &
             file_writer.write_insert_acc_window_query(exp_recorder);
             partition->window_query(exp_recorder, mbrs_map[to_string(areas[2]) + to_string(ratios[2])]);
 
-    exp_recorder.window_size = areas[2];
-    exp_recorder.window_ratio = ratios[2];
+            exp_recorder.window_size = areas[2];
+            exp_recorder.window_ratio = ratios[2];
             exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
             file_writer.write_insert_window_query(exp_recorder);
             exp_recorder.clean();
@@ -269,6 +266,9 @@ void exp_RSMI(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &
     // }
     // exp_recorder.clean();
 }
+
+
+
 
 void exp_LISA(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &points, map<string, vector<Mbr>> mbrs_map, vector<Point> query_points, string model_path)
 {
@@ -419,7 +419,9 @@ void exp_ZM(FileWriter file_writer, ExpRecorder &exp_recorder, vector<Point> &po
             exp_recorder.window_size = areas[i];
             exp_recorder.window_ratio = ratios[2];
             exp_recorder.accuracy = ((double)exp_recorder.window_query_result_size) / exp_recorder.acc_window_query_result_size;
-    file_writer.write_window_query(exp_recorder);
+            cout <<  "accurate result" << exp_recorder.acc_window_query_result_size << endl;
+            cout << "model window query result" << exp_recorder.window_query_result_size << endl;
+            file_writer.write_window_query(exp_recorder);
             exp_recorder.clean();
         }
 

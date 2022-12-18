@@ -127,7 +127,7 @@ vector<Mbr> Mbr::get_mbrs(vector<Point> dataset, float area, int num, float rati
     while (i < num)
     {
         int index = rand() % length;
-        Point point = dataset[index];
+                Point point = dataset[index];
         if (point.x + x <= 1 && point.y + y <= 1)
         {
             Mbr mbr(point.x, point.y, point.x + x, point.y + y);

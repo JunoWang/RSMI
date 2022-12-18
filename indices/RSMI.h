@@ -68,6 +68,9 @@ public:
     vector<float> points_y;
     float sampling_rate = 1.0;
 
+    double num_rec_before_refine_leaf;
+    double num_rec_before_refine_cum = 0;
+
     RSMI();
     RSMI(int index, int max_partition_num);
     RSMI(int index, int level, int max_partition_num);
@@ -1130,6 +1133,9 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
     exp_recorder.is_window = true;
     long long time_cost = 0;
     int length = query_windows.size();
+    double average_num_before_refine = 0;
+    double avg_num_leaf_reached = 0; 
+    double avg_num_leaf_skiped = 0;
     for (int i = 0; i < length; i++)
     {
         vector<Point> vertexes = query_windows[i].get_corner_points();
@@ -1137,10 +1143,21 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
         // vector<Point> window_query_results = window_query(exp_recorder, vertexes, query_windows[i]);
         window_query(exp_recorder, vertexes, query_windows[i]);
         auto finish = chrono::high_resolution_clock::now();
+        std:: cout << "num record before refine" << exp_recorder.num_of_rec_before_refine << endl;
+         std::cout << "num record after refine"  << exp_recorder.window_query_results.size()<< endl; 
+         std::cout << "total num of leaf reached" << exp_recorder.total_num_of_leaf_reached << endl;
+         std::cout << "num of leaf skipped" << exp_recorder.num_of_leaf_skipped << endl;
         exp_recorder.window_query_result_size += exp_recorder.window_query_results.size();
         exp_recorder.window_query_results.clear();
         exp_recorder.window_query_results.shrink_to_fit();
         exp_recorder.time += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
+        average_num_before_refine += exp_recorder.num_of_rec_before_refine ;
+        avg_num_leaf_reached += exp_recorder.total_num_of_leaf_reached;
+        avg_num_leaf_skiped += exp_recorder.num_of_leaf_skipped;
+        exp_recorder.num_of_rec_before_refine = 0;
+        exp_recorder.total_num_of_leaf_reached =0 ;
+        exp_recorder.num_of_leaf_skipped = 0 ;
+    
     }
     // cout << "exp_recorder.window_query_result_size: " << exp_recorder.window_query_result_size << endl;
     exp_recorder.time /= length;
@@ -1148,10 +1165,13 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
     exp_recorder.prediction_time /= length;
     exp_recorder.search_time /= length;
     exp_recorder.search_length /= length;
+    cout<< "average num before refine" << (average_num_before_refine/= length) << endl;
+    cout << "average num of leaf reached" << (avg_num_leaf_reached/= length) << endl;
+    cout << "average num of leaf skipped" << (avg_num_leaf_skiped /= length) << endl;
 }
 
 void RSMI::window_query(ExpRecorder &exp_recorder, vector<Point> vertexes, Mbr query_window)
-{
+{ 
     // vector<Point> window_query_results;
     if (is_last)
     {
@@ -1219,22 +1239,28 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Point> vertexes, Mbr q
         for (size_t i = front; i <= back; i++)
         {
             LeafNode leafnode = leafnodes[i];
+            exp_recorder.total_num_of_leaf_reached +=1;
             if (leafnode.mbr.interact(query_window))
             {
                 exp_recorder.page_access += 1;
                 for (Point point : (*leafnode.children))
                 {
+                    num_rec_before_refine_leaf +=1;
                     if (query_window.contains(point))
                     {
                         exp_recorder.window_query_results.push_back(point);
                         // exp_recorder.window_query_result_size++;
                     }
                 }
+            }else{
+                exp_recorder.num_of_leaf_skipped +=1;
             }
         }
         finish = chrono::high_resolution_clock::now();
+        exp_recorder.num_of_rec_before_refine += num_rec_before_refine_leaf;
         exp_recorder.search_time += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
         exp_recorder.search_length += (back - front + 1);
+
         // return window_query_results;
         return;
     }
@@ -1274,13 +1300,16 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Point> vertexes, Mbr q
             }
             if (children[i].mbr.interact(query_window))
             {
+
                 children[i].window_query(exp_recorder, vertexes, query_window);
                 // vector<Point> temp_result = children[i].window_query(exp_recorder, vertexes, query_window);
                 // window_query_results.insert(window_query_results.end(), temp_result.begin(), temp_result.end());
             }
         }
+
     }
     // return window_query_results;
+    
 }
 
 // this method is for knn query

@@ -277,7 +277,7 @@ def save_synthetic_datasets(sfc_type, synthetic_sfcs):
         result = gen_2d_dataset_via_sfc(synthetic_sfcs[i], sfc_type, 20)
         if len(result) == 0:
             continue
-        all_fo = open("/home/liuguanli/Documents/pre_train/2D_data/%s/dataset_%d_.csv" % (sfc_type, i), "w")
+        all_fo = open("/home/cwang39/RSMI/pre_train/2D_data/%s/dataset_%d_.csv" % (sfc_type, i), "w")
         for item in result:
             all_fo.write(item)
         all_fo.close()
@@ -323,17 +323,17 @@ def synthetic_sfcs_pruning(threshold, synthetic_sfcs):
 
 def gen(distribution, size, dim):
     if distribution == 'uniform':
-        filename = "/home/liuguanli/Documents/pre_train/2D_data/uniform_%d_1_%d_.csv"
+        filename = "/home/cwang39/RSMI/pre_train/2D_data/uniform_%d_1_%d_.csv"
         getUniformPoints(size, filename, dim)
     elif distribution == 'normal':
         means = [0.0, 0.25, 0.5, 0.75, 1.0]
         stddevs = [0.125, 0.25, 0.5]
-        filename = "/home/liuguanli/Documents/pre_train/2D_data/normal_%d_1_%d_%f_%f_.csv"
+        filename = "/home/cwang39/RSMI/pre_train/2D_data/normal_%d_1_%d_%f_%f_.csv"
         for mean in means:
             for stddev in stddevs:
                 getNormalPoints(size, filename, dim, mean, stddev)
     elif distribution == 'skewed':
-        filename = "/home/liuguanli/Documents/pre_train/2D_data/skewed_%d_%d_%d_.csv"
+        filename = "/home/cwang39/RSMI/pre_trainpyt/2D_data/skewed_%d_%d_%d_.csv"
         skewnesses = [4]
         # skewnesses = [2,3,4,5,6,7,8,9]
         for skewness in  skewnesses:
@@ -345,7 +345,7 @@ if __name__ == '__main__':
     # gen(distribution, size, dim)
     # distribution, size, dim = 'uniform', 1000, 2
     # gen(distribution, size, dim)
-    # distribution, size, dim = 'uniform', 2000000, 2
+    distribution, size, dim = 'uniform', 2000000, 2
     # gen(distribution, size, dim)
     # distribution, size, dim = 'uniform', 4000000, 2
     # gen(distribution, size, dim)
@@ -359,7 +359,7 @@ if __name__ == '__main__':
     # gen(distribution, size, dim)
     # distribution, size, dim = 'uniform', 128000000, 2
     # gen(distribution, size, dim)
-    distribution, size, dim = 'skewed', 64000000, 2
+    # distribution, size, dim = 'skewed', 64000000, 2
     # distribution, size, dim = 'skewed', 1000, 2
     gen(distribution, size, dim)
     # save_synthetic_datasets("Z")
