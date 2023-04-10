@@ -1133,9 +1133,9 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
     exp_recorder.is_window = true;
     long long time_cost = 0;
     int length = query_windows.size();
-    double average_num_before_refine = 0;
-    double avg_num_leaf_reached = 0; 
-    double avg_num_leaf_skiped = 0;
+    double cumulated_num_before_refine = 0;
+    double cumulated_num_leaf_reached = 0; 
+    double cumulated_num_leaf_skiped = 0;
     for (int i = 0; i < length; i++)
     {
         vector<Point> vertexes = query_windows[i].get_corner_points();
@@ -1151,13 +1151,12 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
         exp_recorder.window_query_results.clear();
         exp_recorder.window_query_results.shrink_to_fit();
         exp_recorder.time += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
-        average_num_before_refine += exp_recorder.num_of_rec_before_refine ;
-        avg_num_leaf_reached += exp_recorder.total_num_of_leaf_reached;
-        avg_num_leaf_skiped += exp_recorder.num_of_leaf_skipped;
+        cumulated_num_before_refine += exp_recorder.num_of_rec_before_refine ;
+        cumulated_num_leaf_reached += exp_recorder.total_num_of_leaf_reached;
+        cumulated_num_leaf_skiped += exp_recorder.num_of_leaf_skipped;
         exp_recorder.num_of_rec_before_refine = 0;
         exp_recorder.total_num_of_leaf_reached =0 ;
         exp_recorder.num_of_leaf_skipped = 0 ;
-    
     }
     // cout << "exp_recorder.window_query_result_size: " << exp_recorder.window_query_result_size << endl;
     exp_recorder.time /= length;
@@ -1165,9 +1164,10 @@ void RSMI::window_query(ExpRecorder &exp_recorder, vector<Mbr> query_windows)
     exp_recorder.prediction_time /= length;
     exp_recorder.search_time /= length;
     exp_recorder.search_length /= length;
-    cout<< "average num before refine" << (average_num_before_refine/= length) << endl;
-    cout << "average num of leaf reached" << (avg_num_leaf_reached/= length) << endl;
-    cout << "average num of leaf skipped" << (avg_num_leaf_skiped /= length) << endl;
+    cout<< "average num before refine" << (cumulated_num_before_refine/= length) << endl;
+    cout << "average num after refine " << (exp_recorder.window_query_result_size /= length) << endl;
+    cout << "average num of leaf reached" << (cumulated_num_leaf_reached/= length) << endl;
+    cout << "average num of leaf skipped" << (cumulated_num_leaf_skiped /= length) << endl;
 }
 
 void RSMI::window_query(ExpRecorder &exp_recorder, vector<Point> vertexes, Mbr query_window)

@@ -1255,9 +1255,10 @@ int main(int argc, char **argv)
     }
     // exp_binary_search(file_writer, exp_recorder, points);
 
-    // exp_ZM(file_writer, exp_recorder, points, mbrs_map, query_points, model_path);
+    exp_ZM(file_writer, exp_recorder, points, mbrs_map, query_points, model_path);
     // exp_ML_index(file_writer, exp_recorder, points, mbrs_map, query_points, model_path);
-    // exp_RSMI(file_writer, exp_recorder, points, mbrs_map, query_points, model_path);
+    exp_RSMI(file_writer, exp_recorder, points, mbrs_map, query_points, model_path);
+    exp_LISA(file_writer, exp_recorder, points, mbrs_map, query_points, model_path);
 
     // for (size_t i = 10; i >= 0; i--)
     // {points = i * 0.1;
